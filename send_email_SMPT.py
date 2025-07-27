@@ -8,7 +8,7 @@ import os
 # ============================
 # 📦 Load Environment Variables
 # ============================
-load_dotenv()
+load_dotenv(dotenv_path="smpt_variables.env")
 
 # ============================
 # 📧 Send Email Function
@@ -71,23 +71,21 @@ ltc_invested = float(os.getenv("LTC_INVESTED"))
 # 🔁 Get Live Data Loop
 # ============================
 gotData = True
-while True:
-    for _ in range(5):
-        # Get USD to PKR rate
-        pkr_request = get(f"https://v6.exchangerate-api.com/v6/{os.getenv('EXCHANGE_API_KEY')}/latest/USD")
+for _ in range(5):
+    # Get USD to PKR rate
+    pkr_request = get(f"https://v6.exchangerate-api.com/v6/{os.getenv('EXCHANGE_API_KEY')}/latest/USD")
 
-        # Get live coin prices
-        coin_request = get("https://api.coingecko.com/api/v3/simple/price", params=coins_request_data)
+    # Get live coin prices
+    coin_request = get("https://api.coingecko.com/api/v3/simple/price", params=coins_request_data)
 
-        # Retry if failed
-        if pkr_request.status_code != 200 or coin_request.status_code != 200:
-            gotData = False
-            time.sleep(30)
-        else:
-            pkr_rate = pkr_request.json()['conversion_rates']['PKR']
-            coins = coin_request.json()
-            break
-    break
+    # Retry if failed
+    if pkr_request.status_code != 200 or coin_request.status_code != 200:
+        gotData = False
+        time.sleep(30)
+    else:
+        pkr_rate = pkr_request.json()['conversion_rates']['PKR']
+        coins = coin_request.json()
+        break
 
 # ============================
 # 🧾 Calculate and Send Report
