@@ -56,7 +56,7 @@ for _ in range(5):
                        )
     if pkr_request.status_code != 200 or coin_request.status_code != 200:
         gotData = False
-        time.sleep(1)
+        time.sleep(30)
     else:
         pkr_rate = pkr_request.json()['conversion_rates']['PKR']
         coins = coin_request.json()
